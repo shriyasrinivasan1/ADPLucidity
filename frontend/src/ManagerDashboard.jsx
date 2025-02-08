@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './ManagerDashboard.css';
+import "tailwindcss";
 
 // ChatBot Component
 const ChatInterface = () => {
@@ -36,102 +36,38 @@ const ChatInterface = () => {
   };
 
   const TypingIndicator = () => (
-    <div style={{ display: 'flex', gap: '8px', padding: '12px' }}>
-      <div style={{ 
-        width: '8px', 
-        height: '8px', 
-        backgroundColor: '#888',
-        borderRadius: '50%',
-        animation: 'bounce 1.4s infinite',
-        animationDelay: '0ms'
-      }} />
-      <div style={{ 
-        width: '8px', 
-        height: '8px', 
-        backgroundColor: '#888',
-        borderRadius: '50%',
-        animation: 'bounce 1.4s infinite',
-        animationDelay: '200ms'
-      }} />
-      <div style={{ 
-        width: '8px', 
-        height: '8px', 
-        backgroundColor: '#888',
-        borderRadius: '50%',
-        animation: 'bounce 1.4s infinite',
-        animationDelay: '400ms'
-      }} />
+    <div className="flex gap-2 p-3">
+      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce" />
+      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce delay-200" />
+      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce delay-400" />
     </div>
   );
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '20px',
-      left: '20px',
-      zIndex: 1000
-    }}>
+    <div className="fixed bottom-5 left-5 z-50">
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          style={{
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '50%',
-            width: '50px',
-            height: '50px',
-            fontSize: '24px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
-          }}
+          className="bg-red-600 text-white rounded-full w-12 h-12 text-xl cursor-pointer shadow-lg"
         >
           💬
         </button>
       )}
 
       {isOpen && (
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-          width: '300px',
-          maxHeight: '500px',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{
-            backgroundColor: '#007bff',
-            color: 'white',
-            padding: '12px',
-            borderTopLeftRadius: '8px',
-            borderTopRightRadius: '8px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <h3 style={{ margin: 0 }}>AI Assistant</h3>
+        <div className="bg-white rounded-lg shadow-lg w-72 max-h-[500px] flex flex-col">
+          <div className="bg-red-600 text-white p-3 rounded-t-lg flex justify-between items-center">
+            <h3 className="m-0">AI Assistant</h3>
             <div>
               <button 
                 onClick={() => setIsMinimized(!isMinimized)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  marginRight: '8px',
-                  cursor: 'pointer'
-                }}
+                className="bg-none border-none text-white mr-2 cursor-pointer"
               >
                 ─
               </button>
               <button 
                 onClick={() => setIsOpen(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  cursor: 'pointer'
-                }}
+                className="bg-none border-none text-white cursor-pointer"
               >
                 ✕
               </button>
@@ -140,37 +76,20 @@ const ChatInterface = () => {
 
           {!isMinimized && (
             <>
-              <div style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px',
-                maxHeight: '300px'
-              }}>
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 max-h-[300px]">
                 {messages.map((message, index) => (
                   <div
                     key={index}
-                    style={{
-                      display: 'flex',
-                      justifyContent: message.sender === 'user' ? 'flex-end' : 'flex-start'
-                    }}
+                    className={`flex justify-${message.sender === 'user' ? 'end' : 'start'}`}
                   >
-                    <div style={{
-                      maxWidth: '80%',
-                      padding: '12px',
-                      borderRadius: '8px',
-                      backgroundColor: message.sender === 'user' ? '#007bff' : '#f0f0f0',
-                      color: message.sender === 'user' ? 'white' : 'black'
-                    }}>
+                    <div className={`max-w-[80%] p-3 rounded-lg ${message.sender === 'user' ? 'bg-red-600 text-white' : 'bg-gray-200 text-black'}`}>
                       {message.text}
                     </div>
                   </div>
                 ))}
                 {isTyping && (
-                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                    <div style={{ backgroundColor: '#f0f0f0', borderRadius: '8px' }}>
+                  <div className="flex justify-start">
+                    <div className="bg-gray-200 rounded-lg">
                       <TypingIndicator />
                     </div>
                   </div>
@@ -178,37 +97,18 @@ const ChatInterface = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              <form onSubmit={handleSubmit} style={{
-                padding: '16px',
-                borderTop: '1px solid #eee'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  gap: '8px'
-                }}>
+              <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     placeholder="Type your message..."
-                    style={{
-                      flex: 1,
-                      padding: '8px 12px',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      outline: 'none'
-                    }}
+                    className="flex-1 p-2 border border-gray-300 rounded-md outline-none"
                   />
                   <button
                     type="submit"
-                    style={{
-                      backgroundColor: '#007bff',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      padding: '8px 16px',
-                      cursor: 'pointer'
-                    }}
+                    className="bg-red-600 text-white rounded-md py-2 px-4 cursor-pointer"
                   >
                     ➤
                   </button>
@@ -222,41 +122,42 @@ const ChatInterface = () => {
   );
 };
 
-function ManagerDashboard() {
+// Manager Dashboard Component
+const ManagerDashboard = () => {
   return (
-    <div className="dashboard-container">
-      <header className="header">
+    <div className="p-5 bg-white">
+      <header className="flex justify-between items-center p-5 bg-red-600 text-white mb-5">
         <h1>Manager Dashboard</h1>
-        <button className="logout-button">Logout</button>
+        <button className="bg-white text-red-600 py-2 px-4 rounded-md">Logout</button>
       </header>
 
-      <section className="overview">
-        <div className="card">
-          <h2>Total Users</h2>
-          <p className="value">1,245</p>
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
+        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
+          <h2 className="text-red-600 mb-3">Total Users</h2>
+          <p className="text-2xl font-bold text-red-600">1,245</p>
         </div>
-        <div className="card">
-          <h2>Total Revenue</h2>
-          <p className="value">$150,300</p>
+        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
+          <h2 className="text-red-600 mb-3">Total Revenue</h2>
+          <p className="text-2xl font-bold text-red-600">$150,300</p>
         </div>
-        <div className="card">
-          <h2>Pending Tasks</h2>
-          <p className="value">35</p>
+        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
+          <h2 className="text-red-600 mb-3">Pending Tasks</h2>
+          <p className="text-2xl font-bold text-red-600">35</p>
         </div>
       </section>
 
-      <section className="notifications">
-        <h2>Recent Activity</h2>
-        <ul>
-          <li>User "John Doe" completed a task.</li>
-          <li>User "Jane Smith" updated their profile.</li>
-          <li>New revenue report available.</li>
+      <section className="bg-white border-2 border-red-600 rounded-lg p-5">
+        <h2 className="text-red-600 mb-3">Recent Activity</h2>
+        <ul className="list-none p-0">
+          <li className="py-2 border-b border-gray-200 text-gray-700">User "John Doe" completed a task.</li>
+          <li className="py-2 border-b border-gray-200 text-gray-700">User "Jane Smith" updated their profile.</li>
+          <li className="py-2 text-gray-700">New revenue report available.</li>
         </ul>
       </section>
 
       <ChatInterface />
     </div>
   );
-}
+};
 
 export default ManagerDashboard;
