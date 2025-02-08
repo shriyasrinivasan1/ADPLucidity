@@ -1,50 +1,73 @@
-import requests
 import os
+import pickle
+import google.auth
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.auth.transport.requests import Request
 
-# Azure credentials (make sure these are correct)
-tenant_id = os.getenv("AZURE_TENANT_ID", "7748c3ae-c280-4797-ba9e-224b5d517852")
-client_id = os.getenv("AZURE_CLIENT_ID", "bfabffce-cc81-4af0-b582-4884814ae2a2")
-client_secret = os.getenv("AZURE_CLIENT_SECRET", "IG98Q~Qhtu3cFGNJ8mnOqNhBpQXSd92QUQYf8dqn")
 
-# URL for getting the access token
-token_url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+# If modifying or deleting your Gmail, you'll need different scopes:
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 
-# Data to request the token
-data = {
-    "client_id": client_id,
-    "client_secret": client_secret,
-    "grant_type": "client_credentials",
-    "scope": "https://graph.microsoft.com/.default"  # Using .default scope for client credentials flow
-}
+def authenticate_gmail():
+    """Authenticate and get Gmail service."""
+    creds = None
 
-try:
-    # Get the access token
-    response = requests.post(token_url, data=data)
-    response.raise_for_status()  # This will raise an error for HTTP 400+
-    token = response.json()
-    access_token = token["access_token"]
-    print("Access Token:", access_token)
+    # Token file stores the user's access and refresh tokens, and is created automatically when the authorization flow completes for the first time.
+    if os.path.exists('token.pkl'):
+        with open('token.pkl', 'rb') as token:
+            creds = pickle.load(token)
 
-    # Use the token to call the Microsoft Graph API to read emails
-    graph_url = "https://graph.microsoft.com/v1.0/me/messages"  # Or use /users/{id}/messages for a specific user
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json"
-    }
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                '/Users/ayushpatel/lucid/backend/creds.json', SCOPES)
+            creds = flow.run_local_server(port=8000)
 
-    # Send GET request to fetch emails
-    email_response = requests.get(graph_url, headers=headers)
-    email_response.raise_for_status()  # Check if the request was successful
-    emails = email_response.json()
+        # Save the credentials for the next run.
+        with open('token.pkl', 'wb') as token:
+            pickle.dump(creds, token)
 
-    # Print out the email subjects as an example
-    if "value" in emails:
-        for email in emails["value"]:
-            print(f"Subject: {email['subject']}")
-    else:
-        print("No emails found")
+    try:
+        # Build the Gmail API service
+        service = build('gmail', 'v1', credentials=creds)
 
-except requests.exceptions.RequestException as e:
-    print("Error:", e)
-    if 'response' in locals():
-        print("Response:", response.text)  # Print detailed error message
+        return service
+
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+        return None
+
+def list_emails(service):
+    """List the first 10 emails from the inbox."""
+    try:
+        # Call the Gmail API to fetch the messages
+        results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
+        messages = results.get('messages', [])
+
+        if not messages:
+            print('No new messages.')
+        else:
+            print('Messages:')
+            for message in messages[:10]:
+                msg = service.users().messages().get(userId='me', id=message['id']).execute()
+                email_data = msg['payload']['headers']
+                for values in email_data:
+                    name = values['name']
+                print(f"Snippet: {msg['snippet']}")  # Display the snippet (a preview) of the email
+
+    except HttpError as error:
+        print(f'An error occurred: {error}')
+
+def main():
+    """Main function to authenticate and fetch emails."""
+    service = authenticate_gmail()
+    if service:
+        list_emails(service)
+
+if __name__ == '__main__':
+    main()
