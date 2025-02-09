@@ -10,8 +10,8 @@ const ManagerDashboard = () => {
     }, 2000);
   }, []);
 
-  const radius = 40; // Circle radius
-  const strokeWidth = 8; // Stroke thickness
+  const radius = 45; // Circle radius
+  const strokeWidth = 10; // Stroke thickness
   const circumference = 2 * Math.PI * radius; // Full circumference
   const progress = (percentage / 100) * circumference; // Arc length
 
@@ -78,7 +78,7 @@ const ManagerDashboard = () => {
               {/* Happiness Index (Updated) */}
               <div className="bg-white rounded-lg shadow p-6 mb-6 flex flex-col items-center">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
-                <svg width="100" height="100" viewBox="0 0 100 100" className="mb-2">
+                <svg width="300" height="300" viewBox="0 0 100 100" className="mb-2">
                   {/* Background Circle */}
                   <circle
                     cx="50"
