@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 import requests
+from employee_bot_1 import employee_chatbot
+from sent_pipeline import chatbot_response
 
 # Webex API URL and Bot Access Token
 WEBEX_ACCESS_TOKEN = 'YzQ0ZmNkZGItMWU1Ny00MTViLTliMjEtZDhmZTkzZWJhYmQyOTgzNTJhOTktNjdm_PF84_4b2ccbc6-286b-4822-8df0-406a0a012d52'
@@ -13,6 +15,7 @@ async def startup_event():
 
 @app.post("/webex-webhook")
 async def webhook(event: dict):
+    boo = True
     print(event)
     if 'data' in event: 
         person_id = event['data']['personId']
@@ -29,7 +32,10 @@ async def webhook(event: dict):
                 if message.startswith('/feedback'):
                     response_message = handle_feedback_command(message)
                 else:
-                    response_message = f"Received your message: {message}"
+                    if(boo):
+                        response_message = employee_chatbot()
+                        boo = False
+                    response_message = employee_chatbot(message)
                 
                 send_message_to_webex(person_id, response_message)
 
@@ -72,6 +78,9 @@ def get_message_text(message_id: str) -> str:
     else:
         print(f"Failed to fetch message text: {response.status_code}, {response.text}")
         return ""
+    
+@app.post("/chatbot")
+
 
 # Run FastAPI app using Uvicorn
 # To run, use the following command:
