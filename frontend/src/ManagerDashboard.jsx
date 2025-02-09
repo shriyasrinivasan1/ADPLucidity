@@ -1,196 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import "tailwindcss";
+import React, { useState, useEffect } from 'react';
 
-
-// ChatBot Component
-const ChatInterface = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!inputMessage.trim()) return;
-
-    setMessages(prev => [...prev, { text: inputMessage, sender: 'user' }]);
-    setInputMessage('');
-    
-    setIsTyping(true);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        text: "This is a simulated response. Replace this with your actual AI response logic.", 
-        sender: 'ai' 
-      }]);
-      setIsTyping(false);
-    }, 2000);
-  };
-
-  const TypingIndicator = () => (
-    <div className="flex gap-2 p-3">
-      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce" />
-      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce delay-200" />
-      <div className="w-2.5 h-2.5 bg-gray-600 rounded-full animate-bounce delay-400" />
-    </div>
-  );
-
-  return (
-    <div className="fixed bottom-5 right-5 z-50">
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="bg-red-600 text-white rounded-full w-12 h-12 text-xl cursor-pointer shadow-lg hover:bg-red-700"
-        >
-          💬
-        </button>
-      )}
-
-      {isOpen && (
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg w-72 max-h-[500px] flex flex-col">
-          <div className="bg-red-600 text-white p-3 rounded-t-lg flex justify-between items-center">
-            <h3 className="m-0">AI Assistant</h3>
-            <div>
-              <button 
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="bg-none border-none text-white mr-2 cursor-pointer hover:opacity-80"
-              >
-                ─
-              </button>
-              <button 
-                onClick={() => setIsOpen(false)}
-                className="bg-none border-none text-white cursor-pointer hover:opacity-80"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-
-          {!isMinimized && (
-            <>
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 max-h-[300px]">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex justify-${message.sender === 'user' ? 'end' : 'start'}`}
-                  >
-                    <div className={`max-w-[80%] p-3 rounded-lg ${message.sender === 'user' ? 'bg-red-600 text-white' : 'bg-gray-200 text-black'}`}>
-                      {message.text}
-                    </div>
-                  </div>
-                ))}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-200 rounded-lg">
-                      <TypingIndicator />
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              <form onSubmit={handleSubmit} className="p-4 border-t border-gray-200">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1 p-2 border border-gray-300 rounded-md outline-none bg-white/90"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-red-600 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-red-700"
-                  >
-                    ➤
-                  </button>
-                </div>
-              </form>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Consensus Summary Component
-const ConsensusSummary = () => {
-  return (
-    <section className="fixed bottom-5 left-5 w-64 bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-4 z-40">
-      <h2 className="text-red-600 mb-3 text-lg font-bold">Quick Summary</h2>
-      <ul className="list-disc list-inside space-y-2">
-        <li className="text-gray-700">Team productivity up by 25%</li>
-        <li className="text-gray-700">Sprint goals met for Q1</li>
-        <li className="text-gray-700">Budget utilization at 85%</li>
-      </ul>
-    </section>
-  );
-};
-
-// Happiness Index Component
-const HappinessIndex = ({ percentage }) => {
-  const radius = 100;
-  const strokeWidth = 15;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDasharray = circumference;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-  
-  return (
-    <div className="fixed top-24 left-5 bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-4 z-40">
-      <h2 className="text-red-600 mb-3 text-lg font-bold text-center">Happiness Index</h2>
-      <svg
-        width="220"
-        height="220"
-        className="rotate-90"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="110"
-          cy="110"
-          r={radius}
-          stroke="#ddd"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-        />
-        <circle
-          cx="110"
-          cy="110"
-          r={radius}
-          stroke="#dc2626"
-          strokeWidth={strokeWidth}
-          fill="transparent"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          style={{ transition: "stroke-dashoffset 1s ease" }}
-        />
-        <text
-          x="50%"
-          y="50%"
-          textAnchor="middle"
-          dy="0.3em"
-          fill="#333"
-          fontSize="30"
-          fontWeight="bold"
-          className="-rotate-90"
-        >
-          {percentage}%
-        </text>
-      </svg>
-    </div>
-  );
-};
-
-// Manager Dashboard Component
 const ManagerDashboard = () => {
   const [percentage, setPercentage] = useState(75);
 
@@ -201,51 +10,123 @@ const ManagerDashboard = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen">
-      {/* Animated Gradient Background */}
-      
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 z-0 dashboard-gradient min-h-screen" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Gradient Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-red-50 to-gray-50" />
       
       {/* Main Content */}
-      <div className="relative z-10 p-5 w-full">
-        <div className="ml-72">
-          <header className="flex justify-between items-center p-5 bg-white/90 backdrop-blur-sm text-red-600 mb-5 rounded-lg">
-            <h1 className="text-2xl font-bold">Manager Dashboard</h1>
+      <div className="relative">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-red-600">Manager Dashboard</h1>
             <button className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
               Logout
             </button>
-          </header>
+          </div>
+        </header>
 
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
-            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
-              <h2 className="text-red-600 mb-3">Total Users</h2>
+        {/* Dashboard Content */}
+        <main className="max-w-7xl mx-auto p-4">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-gray-600 text-sm font-medium mb-2">Total Users</h2>
               <p className="text-2xl font-bold text-red-600">1,245</p>
             </div>
-            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
-              <h2 className="text-red-600 mb-3">Total Revenue</h2>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-gray-600 text-sm font-medium mb-2">Total Revenue</h2>
               <p className="text-2xl font-bold text-red-600">$150,300</p>
             </div>
-            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
-              <h2 className="text-red-600 mb-3">Pending Tasks</h2>
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-gray-600 text-sm font-medium mb-2">Pending Tasks</h2>
               <p className="text-2xl font-bold text-red-600">35</p>
             </div>
-          </section>
+          </div>
 
-          <section className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5 mb-5">
-            <h2 className="text-red-600 mb-3">Recent Activity</h2>
-            <ul className="list-none p-0">
-              <li className="py-2 border-b border-gray-200 text-gray-700">User "John Doe" completed a task.</li>
-              <li className="py-2 border-b border-gray-200 text-gray-700">User "Jane Smith" updated their profile.</li>
-              <li className="py-2 text-gray-700">New revenue report available.</li>
-            </ul>
-          </section>
-        </div>
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2">
+              {/* Recent Activity */}
+              <div className="bg-white rounded-lg shadow mb-6">
+                <div className="border-b border-gray-200 p-4">
+                  <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
+                </div>
+                <ul className="divide-y divide-gray-200">
+                  <li className="p-4 hover:bg-gray-50">
+                    <p className="text-sm text-gray-700">User "John Doe" completed a task.</p>
+                    <span className="text-xs text-gray-500">2 hours ago</span>
+                  </li>
+                  <li className="p-4 hover:bg-gray-50">
+                    <p className="text-sm text-gray-700">User "Jane Smith" updated their profile.</p>
+                    <span className="text-xs text-gray-500">3 hours ago</span>
+                  </li>
+                  <li className="p-4 hover:bg-gray-50">
+                    <p className="text-sm text-gray-700">New revenue report available.</p>
+                    <span className="text-xs text-gray-500">5 hours ago</span>
+                  </li>
+                </ul>
+              </div>
 
-        {/* Fixed Components */}
-        <HappinessIndex percentage={percentage} />
-        <ConsensusSummary />
-        <ChatInterface />
+              {/* Happiness Index */}
+              <div className="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
+                    <div 
+                      style={{ width: `${percentage}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-600 transition-all duration-500"
+                    />
+                  </div>
+                  <div className="text-right mt-1">
+                    <span className="text-sm font-semibold text-red-600">{percentage}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              {/* Consensus Summary */}
+              <div className="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Consensus Summary</h2>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Team Agreement</span>
+                    <span className="text-sm font-medium text-red-600">85%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Project Progress</span>
+                    <span className="text-sm font-medium text-red-600">92%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat Interface */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4">Team Chat</h2>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-1 bg-gray-100 rounded-lg p-3">
+                      <p className="text-sm text-gray-700">Latest team updates will appear here</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Type a message..."
+                      className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    />
+                    <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
+                      Send
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
