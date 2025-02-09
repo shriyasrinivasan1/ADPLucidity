@@ -10,7 +10,8 @@ const ManagerDashboard = () => {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
 
-  const socketRef = useRef(null); 
+  const socketRef = useRef(null);
+  const chatContainerRef = useRef(null); 
 
   const radius = 40; // Circle radius
   const strokeWidth = 8; // Stroke thickness
@@ -18,6 +19,18 @@ const ManagerDashboard = () => {
   const progress = (percentage / 100) * circumference; // Arc length
   const engagementProgress = (engagementPercentage / 100) * circumference;
   const participationProgress = (participationPercentage / 100) * circumference;
+
+  const isNearBottom = () => {
+    if (!chatContainerRef.current) return false;
+    const container = chatContainerRef.current;
+    return container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+  };
+
+  useEffect(() => {
+    if (chatContainerRef.current && isNearBottom()) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
