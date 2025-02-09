@@ -201,9 +201,9 @@ const ManagerDashboard = () => {
   }, []);
 
   return (
-    <div className="dashboard-container">
+    <div className="relative min-h-screen">
       {/* Animated Gradient Background */}
-
+      
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 z-0 dashboard-gradient min-h-screen" />
       
