@@ -44,7 +44,7 @@ const ChatInterface = () => {
   );
 
   return (
-    <div className="fixed bottom-5 left-5 z-50">
+    <div className="fixed bottom-5 right-5 z-50">
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -122,6 +122,20 @@ const ChatInterface = () => {
   );
 };
 
+// Consensus Summary Component
+const ConsensusSummary = () => {
+  return (
+    <section className="fixed bottom-5 left-5 w-64 bg-white border-2 border-red-600 rounded-lg p-4 z-40">
+      <h2 className="text-red-600 mb-3 text-lg font-bold">Quick Summary</h2>
+      <ul className="list-disc list-inside space-y-2">
+        <li className="text-gray-700">Team productivity up by 25%</li>
+        <li className="text-gray-700">Sprint goals met for Q1</li>
+        <li className="text-gray-700">Budget utilization at 85%</li>
+      </ul>
+    </section>
+  );
+};
+
 // Happiness Index Component
 const HappinessIndex = ({ percentage }) => {
   const radius = 50;
@@ -131,7 +145,8 @@ const HappinessIndex = ({ percentage }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="flex justify-center items-center mb-5">
+    <div className="fixed top-24 left-5 bg-white border-2 border-red-600 rounded-lg p-4 z-40">
+      <h2 className="text-red-600 mb-3 text-lg font-bold text-center">Happiness Index</h2>
       <svg
         width="120"
         height="120"
@@ -165,6 +180,7 @@ const HappinessIndex = ({ percentage }) => {
           fill="#333"
           fontSize="24"
           fontWeight="bold"
+          className="-rotate-90"
         >
           {percentage}%
         </text>
@@ -179,12 +195,12 @@ const ManagerDashboard = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setPercentage(85); // Update this value dynamically as needed
+      setPercentage(85);
     }, 2000);
   }, []);
 
   return (
-    <div className="p-5 bg-white">
+    <div className="p-5 bg-white ml-48 mr-8">
       <header className="flex justify-between items-center p-5 bg-red-600 text-white mb-5">
         <h1>Manager Dashboard</h1>
         <button className="bg-white text-red-600 py-2 px-4 rounded-md">Logout</button>
@@ -205,7 +221,7 @@ const ManagerDashboard = () => {
         </div>
       </section>
 
-      <section className="bg-white border-2 border-red-600 rounded-lg p-5">
+      <section className="bg-white border-2 border-red-600 rounded-lg p-5 mb-5">
         <h2 className="text-red-600 mb-3">Recent Activity</h2>
         <ul className="list-none p-0">
           <li className="py-2 border-b border-gray-200 text-gray-700">User "John Doe" completed a task.</li>
@@ -214,9 +230,9 @@ const ManagerDashboard = () => {
         </ul>
       </section>
 
-      {/* Insert the Happiness Index Component here */}
+      {/* Fixed Components */}
       <HappinessIndex percentage={percentage} />
-
+      <ConsensusSummary />
       <ChatInterface />
     </div>
   );
