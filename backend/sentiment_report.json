@@ -1,0 +1,20 @@
+{
+    "sentiments": [
+        {
+            "sentiment": "Neutral",
+            "count": 31
+        },
+        {
+            "sentiment": "Happy",
+            "count": 22
+        },
+        {
+            "sentiment": "Sad",
+            "count": 8
+        }
+    ],
+    "keywords": [
+        "games",
+        "hello"
+    ]
+}

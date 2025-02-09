@@ -3,6 +3,9 @@ from fastapi.responses import HTMLResponse
 import asyncio
 import json
 import requests
+from employee_bot_1 import employee_chatbot
+from sent_pipeline import chatbot_response
+from sent_pipeline_test_2 import analyze_sentiment, get_sentiment_response
 
 # Webex API URL and Bot Access Token
 WEBEX_ACCESS_TOKEN = 'YzQ0ZmNkZGItMWU1Ny00MTViLTliMjEtZDhmZTkzZWJhYmQyOTgzNTJhOTktNjdm_PF84_4b2ccbc6-286b-4822-8df0-406a0a012d52'
@@ -16,6 +19,7 @@ async def startup_event():
 
 @app.post("/webex-webhook")
 async def webhook(event: dict):
+    boo = True
     print(event)
     if 'data' in event: 
         person_id = event['data']['personId']
@@ -32,7 +36,10 @@ async def webhook(event: dict):
                 if message.startswith('/feedback'):
                     response_message = handle_feedback_command(message)
                 else:
-                    response_message = f"Received your message: {message}"
+                    if(boo):
+                        response_message = employee_chatbot()
+                        boo = False
+                    response_message = employee_chatbot(message)
                 
                 send_message_to_webex(person_id, response_message)
 
@@ -75,8 +82,7 @@ def get_message_text(message_id: str) -> str:
     else:
         print(f"Failed to fetch message text: {response.status_code}, {response.text}")
         return ""
-
-
+    
 @app.websocket("/ws/chat")
 async def chat(websocket: WebSocket):
     await websocket.accept()
@@ -85,9 +91,15 @@ async def chat(websocket: WebSocket):
             # Receive message from the client
             message = await websocket.receive_text()
             print(f"Received message: {message}")
+
+        
+            message_data = json.loads(message) 
+            message_text = message_data.get("message", "")
+
+            print(message_text)
             
             # Process the message (you can integrate with your LLM here)
-            response = f"hawktuahfortnite: {message}"  # Replace with LLM response
+            response = chatbot_response(message_text)  # Replace with LLM response
 
             # Send the processed response back to the client
             await websocket.send_text(json.dumps({"message": response}))
@@ -97,6 +109,3 @@ async def chat(websocket: WebSocket):
             break
     await websocket.close()
 
-# Run FastAPI app using Uvicorn
-# To run, use the following command:
-# uvicorn main:app --reload
