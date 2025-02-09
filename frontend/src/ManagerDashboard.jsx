@@ -108,8 +108,8 @@ const ManagerDashboard = () => {
             <main className="w-full">
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
-                  <h2 className="text-lg font-medium text-gray-900 mb-4">Total Users</h2>
-                  <p className="text-2xl font-bold text-red-600">4</p>
+                  <h2 className="text-lg font-medium text-gray-900 mb-8">Total Users</h2>
+                  <p className="text-6xl font-bold text-red-600 justify-center">4</p>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
@@ -174,7 +174,7 @@ const ManagerDashboard = () => {
                       cx="50"
                       cy="50"
                       r={radius}
-                      stroke="#10b981"
+                      stroke="#6ee7b7"
                       strokeWidth={strokeWidth}
                       fill="none"
                       strokeDasharray={circumference}

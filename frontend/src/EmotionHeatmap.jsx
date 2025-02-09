@@ -24,7 +24,7 @@ const EmotionHeatmap = () => {
 
   return (
     <div className="w-full h-full">  {/* Match parent container dimensions */}
-    <h2 className="text-lg font-medium text-gray-900 mb-4">Team Emotions</h2>
+    <h2 className="text-lg font-medium text-gray-900 mb-4 flex flex-col items-center">Team Emotions</h2>
     
     <div 
       className="relative h-[60px] w-full rounded-lg overflow-hidden cursor-pointer"  // Match height of circle cards
@@ -32,16 +32,16 @@ const EmotionHeatmap = () => {
       onMouseLeave={handleMouseLeave}
     >
         {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-orange-300 to-blue-400" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-orange-300 to-blue-400 blur-sm" />
         
         {/* Randomizing overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-red-400/30 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-400/20 via-orange-300/30 to-red-400/30" />
-        <div className="absolute top-0 left-0 w-2/3 h-1/2 bg-gradient-to-br from-red-400/20 to-transparent rotate-45" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-2/3 bg-gradient-to-tl from-blue-400/30 to-transparent -rotate-12" />
-        <div className="absolute top-1/4 right-1/4 w-1/3 h-1/3 bg-gradient-to-bl from-orange-300/20 to-transparent rotate-45" />
-        <div className="absolute bottom-1/3 left-1/4 w-1/2 h-1/2 bg-gradient-to-tr from-blue-400/20 to-transparent -rotate-12" />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-300/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-red-400/30 to-transparent blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-400/20 via-orange-300/30 to-red-400/30 blur-sm" />
+        <div className="absolute top-0 left-0 w-2/3 h-1/2 bg-gradient-to-br from-red-400/20 to-transparent rotate-45 blur-[2px]" />
+        <div className="absolute bottom-0 right-0 w-1/2 h-2/3 bg-gradient-to-tl from-blue-400/30 to-transparent -rotate-12 blur-[2px]" />
+        <div className="absolute top-1/4 right-1/4 w-1/3 h-1/3 bg-gradient-to-bl from-orange-300/20 to-transparent rotate-45 blur-[2px]" />
+        <div className="absolute bottom-1/3 left-1/4 w-1/2 h-1/2 bg-gradient-to-tr from-blue-400/20 to-transparent -rotate-12 blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-300/10 to-transparent blur-[2px]" />
         
         {/* Hover indicator */}
         {hoveredPosition && (
@@ -60,7 +60,7 @@ const EmotionHeatmap = () => {
           <span className="text-sm text-red-600">Happy</span>
         </div>
         <div className="relative h-2 w-full mt-1 rounded-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-orange-300 to-red-400" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-orange-300 to-red-400 blur-[2px]" />
         </div>
       </div>
     </div>
