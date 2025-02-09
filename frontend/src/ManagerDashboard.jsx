@@ -33,15 +33,13 @@ const ManagerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen relative">
       <div className="fixed inset-0 bg-gradient-to-br from-red-300 to orange-200" />
       <div className="relative flex flex-col h-screen">
         <header className="bg-white rounded-lg border border-gray-200 shadow-sm px-80 py-4 m-4">
           <div className="flex justify-between items-center max-w-full mx-auto">
             <h1 className="text-3xl font-bold text-red-400 text-center whitespace-nowrap mx-auto ">Manager Dashboard</h1>
-            <button className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 transition-colors ml-4">
-              Logout
-            </button>
+
           </div>
         </header>
         
@@ -52,7 +50,7 @@ const ManagerDashboard = () => {
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-gray-600 text-sm font-medium mb-2">Total Users</h2>
-                  <p className="text-2xl font-bold text-red-600">1,245</p>
+                  <p className="text-2xl font-bold text-red-600">4</p>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
@@ -62,7 +60,7 @@ const ManagerDashboard = () => {
                       cx="50"
                       cy="50"
                       r={radius}
-                      stroke="#FECACA"
+                      stroke="#e2e8f0"
                       strokeWidth={strokeWidth}
                       fill="none"
                     />
@@ -71,7 +69,7 @@ const ManagerDashboard = () => {
                       cx="50"
                       cy="50"
                       r={radius}
-                      stroke="#DC2626"
+                      stroke="#6ee7b7"
                       strokeWidth={strokeWidth}
                       fill="none"
                       strokeDasharray={circumference}
@@ -87,7 +85,7 @@ const ManagerDashboard = () => {
                       textAnchor="middle"
                       dy="5"
                       className="text-xl font-bold"
-                      fill="#DC2626"
+                      fill="#6ee7b7"
                     >
                       {percentage}%
                     </text>
@@ -121,7 +119,7 @@ const ManagerDashboard = () => {
           {/* Permanent Chat Panel */}
           <div className="flex-1 flex flex-col">
             <div className="bg-white rounded-lg shadow-sm flex-1 flex flex-col">
-              <div className="bg-red-600 text-white p-3 flex items-center rounded-t-lg">
+              <div className="bg-red-400 text-white p-3 flex items-center rounded-t-lg">
                 <span className="font-medium">AI Chatbot</span>
               </div>
               <div className="flex-1 overflow-y-auto p-3">
