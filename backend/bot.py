@@ -1,29 +1,41 @@
 from fastapi import FastAPI, WebSocket
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
 import requests
 from employee_bot_1 import employee_chatbot
-from sent_pipeline import chatbot_response
+from sent_pipeline import chatbot_response, happiness_index, summarize_ollama
 from sent_pipeline_test_2 import analyze_sentiment, get_sentiment_response
+import os
 
 # Webex API URL and Bot Access Token
 WEBEX_ACCESS_TOKEN = 'YzQ0ZmNkZGItMWU1Ny00MTViLTliMjEtZDhmZTkzZWJhYmQyOTgzNTJhOTktNjdm_PF84_4b2ccbc6-286b-4822-8df0-406a0a012d52'
 WEBEX_API_URL = 'https://webexapis.com/v1/messages'
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change to specific domains in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup_event():
     print("Webex bot is up and running! Waiting for user messages...")
 
+first_interaction = True  
+
 @app.post("/webex-webhook")
 async def webhook(event: dict):
-    boo = True
+    global first_interaction  # Use the global flag
     print(event)
+
     if 'data' in event: 
         person_id = event['data']['personId']
-        
+
         # Ignore messages from the bot itself
         if person_id != 'Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OL2M0YTE1MTg1LTBhNDItNDkzZS05ZDRjLWI1OWY3ZGJkMmMxZg':  # Replace with your bot's ID
             
@@ -32,18 +44,23 @@ async def webhook(event: dict):
             message = get_message_text(message_id)
 
             if message:
-                # Parse the command and respond accordingly
-                if message.startswith('/feedback'):
-                    response_message = handle_feedback_command(message)
+                if first_interaction:  
+                    response_message = employee_chatbot()
+                    first_interaction = False  # Mark that the first message was sent
+                    print("First-time interaction - No input sent.")
                 else:
-                    if(boo):
-                        response_message = employee_chatbot()
-                        boo = False
-                    response_message = employee_chatbot(message)
+                    print(f"User said: {message}")
+                    response_message = employee_chatbot(message)  # Normal chatbot response
                 
                 send_message_to_webex(person_id, response_message)
 
     return {"status": "OK"}
+
+@app.get("/happiness")
+async def get_happiness_score():
+    number = happiness_index()
+    print(number)
+    return JSONResponse(content={"percentage": 75})
 
 def handle_feedback_command(message: str) -> str:
     """Handles the /feedback command."""

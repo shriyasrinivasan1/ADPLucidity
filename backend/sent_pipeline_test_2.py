@@ -118,7 +118,7 @@ def get_sentiment_response():
     insight_prompt = f"""
     You are an AI workplace advisor to the Employer. Keep responses concise and informative, structured as advice.
     Employees are expressing {dominant_emotion}. Common discussion topics include: {topics}.
-    Use common discussion topics to help deduce reasons for the sentiment.
+    Use common discussion topics to help deduce reasons for the sentiment. Stay within 1-2 sentences.
     Summarize the key reasons for this sentiment and provide two actionable suggestions.
     """
     
@@ -146,13 +146,21 @@ def chatbot():
         print("Bot:", response)
 
 
+
+
+
+
+
 def main():
-    start_time = time.time()
+    """ start_time = time.time()
     print("Running optimized sentiment analysis...")
     analyze_sentiment(df)
     chatbot()
     end_time = time.time()
-    print(f"Total execution time: {end_time - start_time:.2f} seconds.")
+    print(f"Total execution time: {end_time - start_time:.2f} seconds.") """
+
+    result = calculate_happiness_index()
+    print(result)
 
 if __name__ == "__main__":
     main()
