@@ -13,7 +13,8 @@ async def startup_event():
 
 @app.post("/webex-webhook")
 async def webhook(event: dict):
-    if 'data' in event:
+    print(event)
+    if 'data' in event: 
         person_id = event['data']['personId']
         
         # Ignore messages from the bot itself

@@ -51,7 +51,7 @@ const ManagerDashboard = () => {
               {/* Recent Activity */}
               <div className="bg-white rounded-lg shadow mb-6">
                 <div className="border-b border-gray-200 p-4">
-                  <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
+                  <h2 className="text-lg font-medium text-gray-900">Summary</h2>
                 </div>
                 <ul className="divide-y divide-gray-200">
                   <li className="p-4 hover:bg-gray-50">
