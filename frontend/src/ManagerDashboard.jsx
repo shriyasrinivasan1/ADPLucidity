@@ -107,7 +107,7 @@ const ManagerDashboard = () => {
           <div className="flex-[3_3_0%] overflow-y-auto min-w-0">
             <main className="w-full">
               <div className="grid grid-cols-2 gap-6 mb-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
                   <h2 className="text-lg font-medium text-gray-900 mb-4">Total Users</h2>
                   <p className="text-2xl font-bold text-red-600">4</p>
                 </div>
@@ -224,7 +224,7 @@ const ManagerDashboard = () => {
           <div className="flex-[1.5] flex flex-col">
             <div className="bg-white rounded-lg shadow-sm flex-1 flex flex-col">
               <div className="bg-red-400 text-black p-3 flex items-center rounded-t-lg">
-                <span className="font-medium">AI Chatbot</span>
+                <span className="font-medium">LucidBot</span>
               </div>
               <div className="flex-1 overflow-y-auto p-3">
                 {messages.map((msg, index) => (
