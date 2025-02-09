@@ -26,6 +26,23 @@ def chatbot_response(user_input):
     return response
 
 
+def summarize_ollama(prompt):
+    """Runs Mistral on Ollama locally with UTF-8 encoding fix."""
+    start_time = time.time()
+    command = ["ollama", "run", "llama3.2:3b"]
+    result = subprocess.run(
+        command,
+        input= "Summarize the following text in one consise paragrapgh: "+prompt,
+        capture_output=True,
+        text=True,
+        encoding="utf-8"  # ✅ Ensure proper character decoding
+    )
+    
+    end_time = time.time()
+    return result.stdout.strip()
+
+
+
 
 if __name__ == "__main__":
     start_time = time.time()

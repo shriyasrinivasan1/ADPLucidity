@@ -5,6 +5,7 @@ import json
 import requests
 from employee_bot_1 import employee_chatbot
 from sent_pipeline import chatbot_response
+from sent_pipeline_test_2 import analyze_sentiment, get_sentiment_response
 
 # Webex API URL and Bot Access Token
 WEBEX_ACCESS_TOKEN = 'YzQ0ZmNkZGItMWU1Ny00MTViLTliMjEtZDhmZTkzZWJhYmQyOTgzNTJhOTktNjdm_PF84_4b2ccbc6-286b-4822-8df0-406a0a012d52'
@@ -82,5 +83,29 @@ def get_message_text(message_id: str) -> str:
         print(f"Failed to fetch message text: {response.status_code}, {response.text}")
         return ""
     
-@app.post("/chatbot")
+@app.websocket("/ws/chat")
+async def chat(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        try:
+            # Receive message from the client
+            message = await websocket.receive_text()
+            print(f"Received message: {message}")
+
+        
+            message_data = json.loads(message) 
+            message_text = message_data.get("message", "")
+
+            print(message_text)
+            
+            # Process the message (you can integrate with your LLM here)
+            response = chatbot_response(message_text)  # Replace with LLM response
+
+            # Send the processed response back to the client
+            await websocket.send_text(json.dumps({"message": response}))
+        
+        except Exception as e:
+            print(f"Error: {e}")
+            break
+    await websocket.close()
 
