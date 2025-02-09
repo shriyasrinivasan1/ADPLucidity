@@ -75,3 +75,28 @@ def get_message_text(message_id: str) -> str:
     else:
         print(f"Failed to fetch message text: {response.status_code}, {response.text}")
         return ""
+
+
+@app.websocket("/ws/chat")
+async def chat(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        try:
+            # Receive message from the client
+            message = await websocket.receive_text()
+            print(f"Received message: {message}")
+            
+            # Process the message (you can integrate with your LLM here)
+            response = f"hawktuahfortnite: {message}"  # Replace with LLM response
+
+            # Send the processed response back to the client
+            await websocket.send_text(json.dumps({"message": response}))
+        
+        except Exception as e:
+            print(f"Error: {e}")
+            break
+    await websocket.close()
+
+# Run FastAPI app using Uvicorn
+# To run, use the following command:
+# uvicorn main:app --reload

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 const ManagerDashboard = () => {
-  const [percentage, setPercentage] = useState(75); // Happiness
+  const [percentage, setPercentage] = useState(61); // Happiness
   const [engagementPercentage, setEngagementPercentage] = useState(60);  // Engagement
   const [participationPercentage, setParticipationPercentage] = useState(80);  // Participation
   const [messages, setMessages] = useState([]);
@@ -19,8 +19,29 @@ const ManagerDashboard = () => {
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
+      const fetchHappinessScore = async () => {
+        try {
+          const response = await fetch('https://8ccb-128-6-147-39.ngrok-free.app/happiness');
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const text = await response.text(); // Get the raw response as text
+          console.log("Raw response:", text);  // Log it to check what we're getting
+      
+          // Manually parse the text into JSON
+          const data = JSON.parse(text);  
+          setPercentage(data.percentage);  // Set the percentage value
+        } catch (error) {
+          console.error("Error fetching happiness score:", error);
+        }
+      };
+
+      fetchHappinessScore();
+
     // Connect to WebSocket server (replace with your FastAPI WebSocket URL)
-    socketRef.current = new WebSocket('ws://c05b-2600-4041-4550-1000-2c9b-4435-4f0f-446f.ngrok-free.app/ws/chat');
+    socketRef.current = new WebSocket('ws://8ccb-128-6-147-39.ngrok-free.app/ws/chat');
 
     socketRef.current.onopen = () => {
       console.log('WebSocket connected');
