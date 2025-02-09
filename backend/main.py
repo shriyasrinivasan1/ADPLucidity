@@ -2,6 +2,7 @@ import requests
 import webbrowser
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
+import csv
 
 # Your Webex App's client ID, client secret, and redirect URI
 CLIENT_ID = 'C4b9242b68105c5692559d82edf879f45edc93c13388ce20481cfeeaeff0c0f1e'
@@ -97,6 +98,13 @@ async def get_rooms(access_token):
         print("Failed to fetch rooms:", response.text)
         return None
 
+# Function to write messages to a CSV file
+async def write_messages_to_csv(messages):
+    with open('webex_messages.csv', mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Message Content'])  # Header for the CSV file
+        for message in messages:
+            writer.writerow([message])  # Write each message
 
 async def get_messages_from_all_rooms(access_token):
     headers = {
@@ -110,6 +118,8 @@ async def get_messages_from_all_rooms(access_token):
         rooms = rooms_response.json()['items']
         print("Fetching messages from all rooms...")
         
+        all_messages = []  # To store all the messages from the rooms
+        
         for room in rooms:
             room_id = room['id']
             # Fetch messages from each room
@@ -120,10 +130,13 @@ async def get_messages_from_all_rooms(access_token):
                 print(f"Messages from room {room['title']} (ID: {room_id}):")
                 if messages['items']:
                     for message in messages['items']:
-                        print(f"{message['text']}")
+                        all_messages.append(message['text'])  # Append message content to the list
                 else:
                     print("No messages found in this room.")
             else:
                 print(f"Failed to fetch messages from room {room_id}: {response.text}")
+        
+        # Once all messages are gathered, write them to the CSV
+        await write_messages_to_csv(all_messages)
     else:
         print("Failed to fetch rooms:", rooms_response.text)
