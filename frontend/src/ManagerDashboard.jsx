@@ -122,8 +122,67 @@ const ChatInterface = () => {
   );
 };
 
+// Happiness Index Component
+const HappinessIndex = ({ percentage }) => {
+  const radius = 50;
+  const strokeWidth = 10;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="flex justify-center items-center mb-5">
+      <svg
+        width="120"
+        height="120"
+        className="rotate-90"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="60"
+          cy="60"
+          r={radius}
+          stroke="#ddd"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+        />
+        <circle
+          cx="60"
+          cy="60"
+          r={radius}
+          stroke="#dc2626"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          style={{ transition: "stroke-dashoffset 1s ease" }}
+        />
+        <text
+          x="50%"
+          y="50%"
+          textAnchor="middle"
+          dy="0.3em"
+          fill="#333"
+          fontSize="24"
+          fontWeight="bold"
+        >
+          {percentage}%
+        </text>
+      </svg>
+    </div>
+  );
+};
+
 // Manager Dashboard Component
 const ManagerDashboard = () => {
+  const [percentage, setPercentage] = useState(75);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPercentage(85); // Update this value dynamically as needed
+    }, 2000);
+  }, []);
+
   return (
     <div className="p-5 bg-white">
       <header className="flex justify-between items-center p-5 bg-red-600 text-white mb-5">
@@ -154,6 +213,9 @@ const ManagerDashboard = () => {
           <li className="py-2 text-gray-700">New revenue report available.</li>
         </ul>
       </section>
+
+      {/* Insert the Happiness Index Component here */}
+      <HappinessIndex percentage={percentage} />
 
       <ChatInterface />
     </div>
