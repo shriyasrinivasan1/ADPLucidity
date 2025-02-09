@@ -1,14 +1,8 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  max-width: 1280px;
-  display: flex;
-  background: linear-gradient(135deg, #f8b195, #f67280, #c06c84, #355c7d);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  text-align: center;
+  
 }
 
 

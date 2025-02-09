@@ -2,10 +2,14 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  background-image:
+    linear-gradient(90deg, rgba(132, 52, 255, 0.3) 0%, rgba(97, 111, 241, 0.55) 58%, rgba(51, 77, 139, 0.3) 100%),
+    radial-gradient(rgba(255, 255, 255, 1) 2px, transparent 0);
+  background-size: 200% 200%, 90px 90px;
+  animation: gradientShift 15s ease infinite Linear;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #522929;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,6 +17,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+  
+
+/* Smooth Gradient Animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 a {
   font-weight: 500;
   color: #646cff;
