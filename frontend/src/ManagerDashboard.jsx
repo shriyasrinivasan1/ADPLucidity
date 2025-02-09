@@ -1,8 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 
 const ManagerDashboard = () => {
   const [percentage, setPercentage] = useState(75);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+
+  const radius = 40; // Circle radius
+  const strokeWidth = 8; // Stroke thickness
+  const circumference = 2 * Math.PI * radius; // Full circumference
+  const progress = (percentage / 100) * circumference; // Arc length
 
   useEffect(() => {
     setTimeout(() => {
@@ -10,54 +17,88 @@ const ManagerDashboard = () => {
     }, 2000);
   }, []);
 
-  const radius = 40; // Circle radius
-  const strokeWidth = 8; // Stroke thickness
-  const circumference = 2 * Math.PI * radius; // Full circumference
-  const progress = (percentage / 100) * circumference; // Arc length
+  const handleSendMessage = () => {
+    if (input.trim() === '') return;
+    
+    const userMessage = { text: input, sender: 'user' };
+    setMessages([...messages, userMessage]);
+    setInput('');
+    setTyping(true);
+
+    setTimeout(() => {
+      const botMessage = { text: `Echo: ${input}`, sender: 'bot' };
+      setMessages(prev => [...prev, botMessage]);
+      setTyping(false);
+    }, 1500);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Gradient Background */}
+    <div className="min-h-screen bg-gray-50 relative">
       <div className="fixed inset-0 bg-gradient-to-br from-red-50 to-gray-50" />
-
-      {/* Main Content */}
-      <div className="relative">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-4 py-3">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-red-600">Manager Dashboard</h1>
-            <button className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
+      <div className="relative flex flex-col h-screen">
+        <header className="bg-white border border-gray-200 shadow-sm px-6 py-4">
+          <div className="flex justify-between items-center max-w-full mx-auto">
+            <h1 className="text-3xl font-bold text-red-600 text-center whitespace-nowrap mx-auto">Manager Dashboard</h1>
+            <button className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 transition-colors ml-4">
               Logout
             </button>
           </div>
         </header>
-
-        {/* Dashboard Content */}
-        <main className="max-w-7xl mx-auto p-4">
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-gray-600 text-sm font-medium mb-2">Total Users</h2>
-              <p className="text-2xl font-bold text-red-600">1,245</p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-gray-600 text-sm font-medium mb-2">Total Revenue</h2>
-              <p className="text-2xl font-bold text-red-600">$150,300</p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-gray-600 text-sm font-medium mb-2">Pending Tasks</h2>
-              <p className="text-2xl font-bold text-red-600">35</p>
-            </div>
-          </div>
-
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content Area */}
-            <div className="lg:col-span-2">
-              {/* Recent Activity */}
-              <div className="bg-white rounded-lg shadow mb-6">
+        
+        <div className="flex flex-1 overflow-hidden p-4 gap-6">
+          {/* Main Content */}
+          <div className="flex-[3_3_0%] overflow-y-auto min-w-0">
+            <main className="w-full">
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-gray-600 text-sm font-medium mb-2">Total Users</h2>
+                  <p className="text-2xl font-bold text-red-600">1,245</p>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
+                  <svg width="100" height="100" viewBox="0 0 100 100" className="mb-2">
+                    {/* Background Circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#FECACA"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                    />
+                    {/* Progress Circle */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#DC2626"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={circumference - progress}
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                      className="transition-all duration-500"
+                    />
+                    {/* Percentage Text */}
+                    <text
+                      x="50"
+                      y="50"
+                      textAnchor="middle"
+                      dy="5"
+                      className="text-xl font-bold"
+                      fill="#DC2626"
+                    >
+                      {percentage}%
+                    </text>
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Summary */}
+              <div className="bg-white rounded-lg shadow-sm">
                 <div className="border-b border-gray-200 p-4">
-                  <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
+                  <h2 className="text-lg font-medium text-gray-900">Summary</h2>
                 </div>
                 <ul className="divide-y divide-gray-200">
                   <li className="p-4 hover:bg-gray-50">
@@ -74,89 +115,64 @@ const ManagerDashboard = () => {
                   </li>
                 </ul>
               </div>
+            </main>
+          </div>
 
-              {/* Happiness Index (Updated) */}
-              <div className="bg-white rounded-lg shadow p-6 mb-6 flex flex-col items-center">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
-                <svg width="100" height="100" viewBox="0 0 100 100" className="mb-2">
-                  {/* Background Circle */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r={radius}
-                    stroke="#FECACA"
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                  />
-                  {/* Progress Circle */}
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r={radius}
-                    stroke="#DC2626"
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={circumference - progress}
-                    strokeLinecap="round"
-                    transform="rotate(-90 50 50)"
-                    className="transition-all duration-500"
-                  />
-                  {/* Percentage Text */}
-                  <text
-                    x="50"
-                    y="50"
-                    textAnchor="middle"
-                    dy="5"
-                    className="text-xl font-bold text-red-600"
+          {/* Permanent Chat Panel */}
+          <div className="flex-1 flex flex-col">
+            <div className="bg-white rounded-lg shadow-sm flex-1 flex flex-col">
+              <div className="bg-red-600 text-white p-3 flex items-center rounded-t-lg">
+                <span className="font-medium">AI Chatbot</span>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3">
+                {messages.map((msg, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-2 my-1 rounded-lg max-w-xs ${
+                      msg.sender === 'user' ? 'ml-auto bg-red-100' : 'mr-auto bg-gray-100'
+                    }`}
                   >
-                    {percentage}%
-                  </text>
-                </svg>
-              </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              {/* Consensus Summary */}
-              <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Consensus Summary</h2>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Team Agreement</span>
-                    <span className="text-sm font-medium text-red-600">85%</span>
+                    {msg.text}
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Project Progress</span>
-                    <span className="text-sm font-medium text-red-600">92%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Chat Interface */}
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-4">Team Chat</h2>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-1 bg-gray-100 rounded-lg p-3">
-                      <p className="text-sm text-gray-700">Latest team updates will appear here</p>
+                ))}
+                {typing && (
+                  <div className="p-10">
+                    <div className="flex items-center space-x-3 text-gray-600 text-sm">
+                      <div className="flex h-full items-center space-x-1">
+                        <div className="h-5 animate-bounce">
+                          <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
+                        </div>
+                        <div className="h-5 animate-bounce">
+                          <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
+                        </div>
+                        <div className="h-5 animate-bounce">
+                          <div className="h-1.5 w-1.5 rounded-full bg-gray-400"></div>
+                        </div>
+                      </div>
+                      <p className="mb-4">Typing...</p>
                     </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      placeholder="Type a message..."
-                      className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    />
-                    <button className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">
-                      Send
-                    </button>
-                  </div>
-                </div>
+                )}
+              </div>
+              <div className="p-3 border-t flex">
+                <input 
+                  type="text" 
+                  className="flex-1 p-2 border rounded-l-lg text-black" 
+                  value={input} 
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type a message..."
+                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                />
+                <button 
+                  className="bg-red-600 text-white px-4 rounded-r-lg hover:bg-red-700 transition-colors" 
+                  onClick={handleSendMessage}
+                >
+                  Send
+                </button>
               </div>
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );
