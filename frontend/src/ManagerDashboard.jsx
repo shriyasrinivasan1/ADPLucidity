@@ -1,35 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const ManagerDashboard = () => {
-  const [percentage, setPercentage] = useState(75);
+  const [percentage, setPercentage] = useState(75); // Happiness
+  const [engagementPercentage, setEngagementPercentage] = useState(60);  // Engagement
+  const [participationPercentage, setParticipationPercentage] = useState(80);  // Participation
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+
+  const socketRef = useRef(null); 
 
   const radius = 40; // Circle radius
   const strokeWidth = 8; // Stroke thickness
   const circumference = 2 * Math.PI * radius; // Full circumference
   const progress = (percentage / 100) * circumference; // Arc length
+  const engagementProgress = (engagementPercentage / 100) * circumference;
+  const participationProgress = (participationPercentage / 100) * circumference;
 
+  // Connect to WebSocket server on component mount
   useEffect(() => {
-    setTimeout(() => {
-      setPercentage(75);
-    }, 2000);
+    // Connect to WebSocket server (replace with your FastAPI WebSocket URL)
+    socketRef.current = new WebSocket('ws://c05b-2600-4041-4550-1000-2c9b-4435-4f0f-446f.ngrok-free.app/ws/chat');
+
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: response.message, sender: 'bot' },
+      ]);
+      setTyping(false);
+    };
+
+    const handleSendMessage = () => {
+      if (input.trim() === '') return;
+  
+      const userMessage = { text: input, sender: 'user' };
+      setMessages([...messages, userMessage]);
+      setInput('');
+      setTyping(true);
+  
+      // Send the message to WebSocket server
+      socketRef.current.send(JSON.stringify({ message: input }));
+    };
+
+    // Cleanup WebSocket connection on component unmount
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
   }, []);
 
+
+  // Send message to WebSocket server
   const handleSendMessage = () => {
     if (input.trim() === '') return;
     
     const userMessage = { text: input, sender: 'user' };
     setMessages([...messages, userMessage]);
     setInput('');
-    setTyping(true);
+    setTyping(true); // Show typing indicator while waiting for a response
 
-    setTimeout(() => {
-      const botMessage = { text: `Echo: ${input}`, sender: 'bot' };
-      setMessages(prev => [...prev, botMessage]);
-      setTyping(false);
-    }, 1500);
+    // Send the user message to WebSocket server
+    socketRef.current.send(JSON.stringify({ message: input }));
   };
 
   return (
@@ -39,7 +76,6 @@ const ManagerDashboard = () => {
         <header className="bg-white rounded-lg border border-gray-200 shadow-sm px-80 py-4 m-4">
           <div className="flex justify-between items-center max-w-full mx-auto">
             <h1 className="text-3xl font-bold text-red-400 text-center whitespace-nowrap mx-auto ">Manager Dashboard</h1>
-
           </div>
         </header>
         
@@ -93,6 +129,85 @@ const ManagerDashboard = () => {
                 </div>
               </div>
               
+              {/* Engagement and Participation Boxes */}
+              <div className="grid grid-cols-2 gap-6 mb-6">
+                {/* Engagement Progress Circle */}
+                <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">Engagement Levels</h2>
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#e2e8f0"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#3b82f6"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={circumference - engagementProgress}
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                      className="transition-all duration-500"
+                    />
+                    <text
+                      x="50"
+                      y="50"
+                      textAnchor="middle"
+                      dy="5"
+                      className="text-xl font-bold"
+                      fill="#3b82f6"
+                    >
+                      {engagementPercentage}%
+                    </text>
+                  </svg>
+                </div>
+
+                {/* Participation Progress Circle */}
+                <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">Participation Levels</h2>
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#e2e8f0"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r={radius}
+                      stroke="#10b981"
+                      strokeWidth={strokeWidth}
+                      fill="none"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={circumference - participationProgress}
+                      strokeLinecap="round"
+                      transform="rotate(-90 50 50)"
+                      className="transition-all duration-500"
+                    />
+                    <text
+                      x="50"
+                      y="50"
+                      textAnchor="middle"
+                      dy="5"
+                      className="text-xl font-bold"
+                      fill="#10b981"
+                    >
+                      {participationPercentage}%
+                    </text>
+                  </svg>
+                </div>
+              </div>
+
               {/* Summary */}
               <div className="bg-white rounded-lg shadow-sm">
                 <div className="border-b border-gray-200 p-4">
@@ -153,7 +268,7 @@ const ManagerDashboard = () => {
                 )}
               </div>
               <div className="p-3 border-t flex">
-                <input 
+                  <input 
                   type="text" 
                   className="flex-1 p-2 border rounded-l-lg text-black" 
                   value={input} 

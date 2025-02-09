@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
+from fastapi.responses import HTMLResponse
+import asyncio
+import json
 import requests
 from employee_bot_1 import employee_chatbot
 from sent_pipeline import chatbot_response
@@ -81,7 +84,3 @@ def get_message_text(message_id: str) -> str:
     
 @app.post("/chatbot")
 
-
-# Run FastAPI app using Uvicorn
-# To run, use the following command:
-# uvicorn main:app --reload
