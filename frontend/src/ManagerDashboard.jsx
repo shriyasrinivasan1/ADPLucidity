@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 
 const ManagerDashboard = () => {
@@ -9,11 +10,16 @@ const ManagerDashboard = () => {
     }, 2000);
   }, []);
 
+  const radius = 40; // Circle radius
+  const strokeWidth = 8; // Stroke thickness
+  const circumference = 2 * Math.PI * radius; // Full circumference
+  const progress = (percentage / 100) * circumference; // Arc length
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Gradient Background */}
       <div className="fixed inset-0 bg-gradient-to-br from-red-50 to-gray-50" />
-      
+
       {/* Main Content */}
       <div className="relative">
         {/* Header */}
@@ -69,20 +75,44 @@ const ManagerDashboard = () => {
                 </ul>
               </div>
 
-              {/* Happiness Index */}
-              <div className="bg-white rounded-lg shadow p-6 mb-6">
+              {/* Happiness Index (Updated) */}
+              <div className="bg-white rounded-lg shadow p-6 mb-6 flex flex-col items-center">
                 <h2 className="text-lg font-medium text-gray-900 mb-4">Team Happiness Index</h2>
-                <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                    <div 
-                      style={{ width: `${percentage}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-600 transition-all duration-500"
-                    />
-                  </div>
-                  <div className="text-right mt-1">
-                    <span className="text-sm font-semibold text-red-600">{percentage}%</span>
-                  </div>
-                </div>
+                <svg width="100" height="100" viewBox="0 0 100 100" className="mb-2">
+                  {/* Background Circle */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    stroke="#FECACA"
+                    strokeWidth={strokeWidth}
+                    fill="none"
+                  />
+                  {/* Progress Circle */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r={radius}
+                    stroke="#DC2626"
+                    strokeWidth={strokeWidth}
+                    fill="none"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={circumference - progress}
+                    strokeLinecap="round"
+                    transform="rotate(-90 50 50)"
+                    className="transition-all duration-500"
+                  />
+                  {/* Percentage Text */}
+                  <text
+                    x="50"
+                    y="50"
+                    textAnchor="middle"
+                    dy="5"
+                    className="text-xl font-bold text-red-600"
+                  >
+                    {percentage}%
+                  </text>
+                </svg>
               </div>
             </div>
 
