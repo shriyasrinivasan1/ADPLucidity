@@ -20,7 +20,7 @@ const ManagerDashboard = () => {
   // Connect to WebSocket server on component mount
   useEffect(() => {
     // Connect to WebSocket server (replace with your FastAPI WebSocket URL)
-    socketRef.current = new WebSocket('ws://c05b-2600-4041-4550-1000-2c9b-4435-4f0f-446f.ngrok-free.app/ws/chat');
+    socketRef.current = new WebSocket('ws://9d58-128-6-147-39.ngrok-free.app/ws/chat');
 
     socketRef.current.onopen = () => {
       console.log('WebSocket connected');
@@ -232,7 +232,7 @@ const ManagerDashboard = () => {
           </div>
 
           {/* Permanent Chat Panel */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-[1.5] flex flex-col">
             <div className="bg-white rounded-lg shadow-sm flex-1 flex flex-col">
               <div className="bg-red-400 text-white p-3 flex items-center rounded-t-lg">
                 <span className="font-medium">AI Chatbot</span>
