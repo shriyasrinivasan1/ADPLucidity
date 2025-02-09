@@ -108,7 +108,7 @@ def list_emails(service):
             print('Messages:')
             
             # Open the CSV file for writing
-            with open('emails.csv', mode='w', newline='', encoding='utf-8') as file:
+            with open('backend/webex_messages.csv', mode='a', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 # Write the header row
                 writer.writerow(['Message ID', 'Email Content'])

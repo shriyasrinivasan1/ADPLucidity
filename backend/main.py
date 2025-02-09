@@ -17,7 +17,7 @@ authorization_page_opened = False  # Flag to track if the authorization page has
 
 # Redirect URL to be opened in the browser for the user to authorize
 authorization_url = (
-    f'https://webexapis.com/v1/authorize?client_id=C4b9242b68105c5692559d82edf879f45edc93c13388ce20481cfeeaeff0c0f1e&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcallback&scope=analytics%3Aread_all%20meeting%3Aparticipants_read%20spark-admin%3Aevents_read%20spark-admin%3Amessages_read%20spark-admin%3Apeople_read%20spark-compliance%3Aevents_read%20spark-compliance%3Ameetings_read%20spark-compliance%3Ameetings_write%20spark-compliance%3Arecordings_read%20spark-compliance%3Arooms_read%20spark-compliance%3Arooms_write%20spark-compliance%3Ateam_memberships_read%20spark-compliance%3Ateam_memberships_write%20spark-compliance%3Ateams_read%20spark%3Akms%20spark%3Amessages_read%20spark%3Arooms_read'
+    f'https://webexapis.com/v1/authorize?client_id=C4b9242b68105c5692559d82edf879f45edc93c13388ce20481cfeeaeff0c0f1e&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcallback&scope=spark-compliance%3Ameetings_write%20meeting%3Arecordings_read%20analytics%3Aread_all%20meeting%3Aparticipants_read%20meeting%3Aadmin_participants_read%20spark-admin%3Aevents_read%20spark-compliance%3Ameetings_read%20meeting%3Aadmin_recordings_read%20meeting%3Atranscripts_read%20spark%3Amessages_read%20spark-compliance%3Aevents_read%20spark-compliance%3Arooms_read%20spark-compliance%3Ateam_memberships_read%20spark-compliance%3Ateam_memberships_write%20spark%3Akms%20meeting%3Acontrols_write%20spark%3Arooms_read%20spark-admin%3Amessages_read%20meeting%3Acontrols_read%20spark-compliance%3Ateams_read%20spark-compliance%3Arooms_write%20spark-compliance%3Arecordings_read%20spark-admin%3Apeople_read%20meeting%3Aadmin_transcripts_read'
 )
 
 @app.get("/")
@@ -45,11 +45,15 @@ async def callback(request: Request):
     if access_token:
         rooms = await get_rooms(access_token)
         if rooms:
-            # Get the first room's ID automatically
             room_id = rooms[0]['id']
             await get_messages_from_all_rooms(access_token)
+        
+        # Add this new call to get recordings
+        recordings = await get_recordings(access_token)
+        if recordings:
+            print(f"Successfully retrieved {len(recordings)} recordings")
         else:
-            print("No rooms found.")
+            print("No recordings found or error occurred")
     else:
         print("Access token retrieval failed, aborting.")
 
@@ -140,3 +144,48 @@ async def get_messages_from_all_rooms(access_token):
         await write_messages_to_csv(all_messages)
     else:
         print("Failed to fetch rooms:", rooms_response.text)
+
+async def get_recordings(access_token):
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    
+    # Get recordings from the past 30 days (you can adjust this timeframe)
+    from datetime import datetime, timedelta
+    from_date = (datetime.utcnow() - timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    
+    # API endpoint for recordings
+    url = 'https://webexapis.com/v1/recordings'
+    params = {
+        'from': from_date,
+        'max': 10  # Adjust this number based on how many recordings you want to retrieve
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        
+        if response.status_code == 200:
+            
+            recordings = response.json()['items']
+            print(f"Found {len(recordings)} recordings")
+            
+            # Process each recording
+            for recording in recordings:
+                print(f"\nRecording Details:")
+                print(f"Topic: {recording.get('topic', 'No topic')}")
+                print(f"Created: {recording.get('createTime', 'No create time')}")
+                print(f"Duration: {recording.get('durationSeconds', 0)} seconds")
+                print(f"Download URL: {recording.get('downloadUrl', 'No download URL')}")
+                print(f"Play URL: {recording.get('playUrl', 'No play URL')}")
+                
+            return recordings
+            
+        else:
+            print(f"Failed to fetch recordings. Status code: {response.status_code}")
+            print(f"Error message: {response.text}")
+            return None
+            
+    except Exception as e:
+        print(f"Error fetching recordings: {str(e)}")
+        return None
