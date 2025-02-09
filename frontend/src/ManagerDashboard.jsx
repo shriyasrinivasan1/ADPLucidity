@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import EmotionHeatmap from './EmotionHeatmap';
+
 
 const ManagerDashboard = () => {
   const [percentage, setPercentage] = useState(61); // Happiness
@@ -106,7 +108,7 @@ const ManagerDashboard = () => {
             <main className="w-full">
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-gray-600 text-sm font-medium mb-2">Total Users</h2>
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">Total Users</h2>
                   <p className="text-2xl font-bold text-red-600">4</p>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
@@ -152,43 +154,9 @@ const ManagerDashboard = () => {
               
               {/* Engagement and Participation Boxes */}
               <div className="grid grid-cols-2 gap-6 mb-6">
-                {/* Engagement Progress Circle */}
-                <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
-                  <h2 className="text-lg font-medium text-gray-900 mb-4">Engagement Levels</h2>
-                  <svg width="100" height="100" viewBox="0 0 100 100">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r={radius}
-                      stroke="#e2e8f0"
-                      strokeWidth={strokeWidth}
-                      fill="none"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r={radius}
-                      stroke="#3b82f6"
-                      strokeWidth={strokeWidth}
-                      fill="none"
-                      strokeDasharray={circumference}
-                      strokeDashoffset={circumference - engagementProgress}
-                      strokeLinecap="round"
-                      transform="rotate(-90 50 50)"
-                      className="transition-all duration-500"
-                    />
-                    <text
-                      x="50"
-                      y="50"
-                      textAnchor="middle"
-                      dy="5"
-                      className="text-xl font-bold"
-                      fill="#3b82f6"
-                    >
-                      {engagementPercentage}%
-                    </text>
-                  </svg>
-                </div>
+              <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
+                <EmotionHeatmap />
+            </div>
 
                 {/* Participation Progress Circle */}
                 <div className="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
@@ -255,7 +223,7 @@ const ManagerDashboard = () => {
           {/* Permanent Chat Panel */}
           <div className="flex-[1.5] flex flex-col">
             <div className="bg-white rounded-lg shadow-sm flex-1 flex flex-col">
-              <div className="bg-red-400 text-white p-3 flex items-center rounded-t-lg">
+              <div className="bg-red-400 text-black p-3 flex items-center rounded-t-lg">
                 <span className="font-medium">AI Chatbot</span>
               </div>
               <div className="flex-1 overflow-y-auto p-3">
@@ -263,7 +231,7 @@ const ManagerDashboard = () => {
                   <div 
                     key={index} 
                     className={`p-2 my-1 rounded-lg max-w-xs ${
-                      msg.sender === 'user' ? 'ml-auto bg-red-100' : 'mr-auto bg-gray-100'
+                      msg.sender === 'user' ? 'ml-auto bg-red-100 text-black' : 'mr-auto bg-violet-200 text-black'
                     }`}
                   >
                     {msg.text}

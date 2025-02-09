@@ -140,3 +140,5 @@ async def get_messages_from_all_rooms(access_token):
         await write_messages_to_csv(all_messages)
     else:
         print("Failed to fetch rooms:", rooms_response.text)
+
+        
