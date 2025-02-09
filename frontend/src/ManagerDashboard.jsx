@@ -34,11 +34,11 @@ const ManagerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      <div className="fixed inset-0 bg-gradient-to-br from-red-50 to-gray-50" />
+      <div className="fixed inset-0 bg-gradient-to-br from-red-300 to orange-200" />
       <div className="relative flex flex-col h-screen">
-        <header className="bg-white border border-gray-200 shadow-sm px-6 py-4">
+        <header className="bg-white rounded-lg border border-gray-200 shadow-sm px-80 py-4 m-4">
           <div className="flex justify-between items-center max-w-full mx-auto">
-            <h1 className="text-3xl font-bold text-red-600 text-center whitespace-nowrap mx-auto">Manager Dashboard</h1>
+            <h1 className="text-3xl font-bold text-red-400 text-center whitespace-nowrap mx-auto ">Manager Dashboard</h1>
             <button className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 transition-colors ml-4">
               Logout
             </button>
