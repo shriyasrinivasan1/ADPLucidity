@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import "tailwindcss";
 
+
 // ChatBot Component
 const ChatInterface = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,26 +49,26 @@ const ChatInterface = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-red-600 text-white rounded-full w-12 h-12 text-xl cursor-pointer shadow-lg"
+          className="bg-red-600 text-white rounded-full w-12 h-12 text-xl cursor-pointer shadow-lg hover:bg-red-700"
         >
           💬
         </button>
       )}
 
       {isOpen && (
-        <div className="bg-white rounded-lg shadow-lg w-72 max-h-[500px] flex flex-col">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg w-72 max-h-[500px] flex flex-col">
           <div className="bg-red-600 text-white p-3 rounded-t-lg flex justify-between items-center">
             <h3 className="m-0">AI Assistant</h3>
             <div>
               <button 
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="bg-none border-none text-white mr-2 cursor-pointer"
+                className="bg-none border-none text-white mr-2 cursor-pointer hover:opacity-80"
               >
                 ─
               </button>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="bg-none border-none text-white cursor-pointer"
+                className="bg-none border-none text-white cursor-pointer hover:opacity-80"
               >
                 ✕
               </button>
@@ -104,11 +105,11 @@ const ChatInterface = () => {
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     placeholder="Type your message..."
-                    className="flex-1 p-2 border border-gray-300 rounded-md outline-none"
+                    className="flex-1 p-2 border border-gray-300 rounded-md outline-none bg-white/90"
                   />
                   <button
                     type="submit"
-                    className="bg-red-600 text-white rounded-md py-2 px-4 cursor-pointer"
+                    className="bg-red-600 text-white rounded-md py-2 px-4 cursor-pointer hover:bg-red-700"
                   >
                     ➤
                   </button>
@@ -125,7 +126,7 @@ const ChatInterface = () => {
 // Consensus Summary Component
 const ConsensusSummary = () => {
   return (
-    <section className="fixed bottom-5 left-5 w-64 bg-white border-2 border-red-600 rounded-lg p-4 z-40">
+    <section className="fixed bottom-5 left-5 w-64 bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-4 z-40">
       <h2 className="text-red-600 mb-3 text-lg font-bold">Quick Summary</h2>
       <ul className="list-disc list-inside space-y-2">
         <li className="text-gray-700">Team productivity up by 25%</li>
@@ -138,32 +139,32 @@ const ConsensusSummary = () => {
 
 // Happiness Index Component
 const HappinessIndex = ({ percentage }) => {
-  const radius = 50;
-  const strokeWidth = 10;
+  const radius = 100;
+  const strokeWidth = 15;
   const circumference = 2 * Math.PI * radius;
   const strokeDasharray = circumference;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
+  
   return (
-    <div className="fixed top-24 left-5 bg-white border-2 border-red-600 rounded-lg p-4 z-40">
+    <div className="fixed top-24 left-5 bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-4 z-40">
       <h2 className="text-red-600 mb-3 text-lg font-bold text-center">Happiness Index</h2>
       <svg
-        width="120"
-        height="120"
+        width="220"
+        height="220"
         className="rotate-90"
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          cx="60"
-          cy="60"
+          cx="110"
+          cy="110"
           r={radius}
           stroke="#ddd"
           strokeWidth={strokeWidth}
           fill="transparent"
         />
         <circle
-          cx="60"
-          cy="60"
+          cx="110"
+          cy="110"
           r={radius}
           stroke="#dc2626"
           strokeWidth={strokeWidth}
@@ -178,7 +179,7 @@ const HappinessIndex = ({ percentage }) => {
           textAnchor="middle"
           dy="0.3em"
           fill="#333"
-          fontSize="24"
+          fontSize="30"
           fontWeight="bold"
           className="-rotate-90"
         >
@@ -195,45 +196,56 @@ const ManagerDashboard = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setPercentage(85);
+      setPercentage(75);
     }, 2000);
   }, []);
 
   return (
-    <div className="p-5 bg-white ml-48 mr-8">
-      <header className="flex justify-between items-center p-5 bg-red-600 text-white mb-5">
-        <h1>Manager Dashboard</h1>
-        <button className="bg-white text-red-600 py-2 px-4 rounded-md">Logout</button>
-      </header>
+    <div className="relative min-h-screen">
+      {/* Animated Gradient Background */}
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 z-0 dashboard-gradient min-h-screen" />
+      
+      {/* Main Content */}
+      <div className="relative z-10 p-5 w-full">
+        <div className="ml-72">
+          <header className="flex justify-between items-center p-5 bg-white/90 backdrop-blur-sm text-red-600 mb-5 rounded-lg">
+            <h1 className="text-2xl font-bold">Manager Dashboard</h1>
+            <button className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
+              Logout
+            </button>
+          </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
-        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
-          <h2 className="text-red-600 mb-3">Total Users</h2>
-          <p className="text-2xl font-bold text-red-600">1,245</p>
-        </div>
-        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
-          <h2 className="text-red-600 mb-3">Total Revenue</h2>
-          <p className="text-2xl font-bold text-red-600">$150,300</p>
-        </div>
-        <div className="bg-white border-2 border-red-600 rounded-lg p-5 text-center">
-          <h2 className="text-red-600 mb-3">Pending Tasks</h2>
-          <p className="text-2xl font-bold text-red-600">35</p>
-        </div>
-      </section>
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
+            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
+              <h2 className="text-red-600 mb-3">Total Users</h2>
+              <p className="text-2xl font-bold text-red-600">1,245</p>
+            </div>
+            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
+              <h2 className="text-red-600 mb-3">Total Revenue</h2>
+              <p className="text-2xl font-bold text-red-600">$150,300</p>
+            </div>
+            <div className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5">
+              <h2 className="text-red-600 mb-3">Pending Tasks</h2>
+              <p className="text-2xl font-bold text-red-600">35</p>
+            </div>
+          </section>
 
-      <section className="bg-white border-2 border-red-600 rounded-lg p-5 mb-5">
-        <h2 className="text-red-600 mb-3">Recent Activity</h2>
-        <ul className="list-none p-0">
-          <li className="py-2 border-b border-gray-200 text-gray-700">User "John Doe" completed a task.</li>
-          <li className="py-2 border-b border-gray-200 text-gray-700">User "Jane Smith" updated their profile.</li>
-          <li className="py-2 text-gray-700">New revenue report available.</li>
-        </ul>
-      </section>
+          <section className="bg-white/90 backdrop-blur-sm border-2 border-red-600 rounded-lg p-5 mb-5">
+            <h2 className="text-red-600 mb-3">Recent Activity</h2>
+            <ul className="list-none p-0">
+              <li className="py-2 border-b border-gray-200 text-gray-700">User "John Doe" completed a task.</li>
+              <li className="py-2 border-b border-gray-200 text-gray-700">User "Jane Smith" updated their profile.</li>
+              <li className="py-2 text-gray-700">New revenue report available.</li>
+            </ul>
+          </section>
+        </div>
 
-      {/* Fixed Components */}
-      <HappinessIndex percentage={percentage} />
-      <ConsensusSummary />
-      <ChatInterface />
+        {/* Fixed Components */}
+        <HappinessIndex percentage={percentage} />
+        <ConsensusSummary />
+        <ChatInterface />
+      </div>
     </div>
   );
 };
