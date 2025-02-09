@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const ManagerDashboard = () => {
   const [percentage, setPercentage] = useState(75); // Happiness
@@ -8,6 +8,8 @@ const ManagerDashboard = () => {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
 
+  const socketRef = useRef(null); 
+
   const radius = 40; // Circle radius
   const strokeWidth = 8; // Stroke thickness
   const circumference = 2 * Math.PI * radius; // Full circumference
@@ -15,25 +17,56 @@ const ManagerDashboard = () => {
   const engagementProgress = (engagementPercentage / 100) * circumference;
   const participationProgress = (participationPercentage / 100) * circumference;
 
+  // Connect to WebSocket server on component mount
   useEffect(() => {
-    setTimeout(() => {
-      setPercentage(75);
-    }, 2000);
+    // Connect to WebSocket server (replace with your FastAPI WebSocket URL)
+    socketRef.current = new WebSocket('ws://c05b-2600-4041-4550-1000-2c9b-4435-4f0f-446f.ngrok-free.app/ws/chat');
+
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const response = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: response.message, sender: 'bot' },
+      ]);
+      setTyping(false);
+    };
+
+    const handleSendMessage = () => {
+      if (input.trim() === '') return;
+  
+      const userMessage = { text: input, sender: 'user' };
+      setMessages([...messages, userMessage]);
+      setInput('');
+      setTyping(true);
+  
+      // Send the message to WebSocket server
+      socketRef.current.send(JSON.stringify({ message: input }));
+    };
+
+    // Cleanup WebSocket connection on component unmount
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
   }, []);
 
+
+  // Send message to WebSocket server
   const handleSendMessage = () => {
     if (input.trim() === '') return;
     
     const userMessage = { text: input, sender: 'user' };
     setMessages([...messages, userMessage]);
     setInput('');
-    setTyping(true);
+    setTyping(true); // Show typing indicator while waiting for a response
 
-    setTimeout(() => {
-      const botMessage = { text: `Echo: ${input}`, sender: 'bot' };
-      setMessages(prev => [...prev, botMessage]);
-      setTyping(false);
-    }, 1500);
+    // Send the user message to WebSocket server
+    socketRef.current.send(JSON.stringify({ message: input }));
   };
 
   return (
@@ -235,7 +268,7 @@ const ManagerDashboard = () => {
                 )}
               </div>
               <div className="p-3 border-t flex">
-                <input 
+                  <input 
                   type="text" 
                   className="flex-1 p-2 border rounded-l-lg text-black" 
                   value={input} 

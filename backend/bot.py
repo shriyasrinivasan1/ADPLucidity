@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
+from fastapi.responses import HTMLResponse
+import asyncio
+import json
 import requests
 
 # Webex API URL and Bot Access Token
@@ -72,7 +75,3 @@ def get_message_text(message_id: str) -> str:
     else:
         print(f"Failed to fetch message text: {response.status_code}, {response.text}")
         return ""
-
-# Run FastAPI app using Uvicorn
-# To run, use the following command:
-# uvicorn main:app --reload
